@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  
+  
+  
+      <link rel="stylesheet" href="css/style2.css">
+
+  
+</head>
+
+<style>
+.target > div {
+  display: none;
+}
+.target > div:target {
+  display: block;
+}
+</style>
+
+<body>
+  <span class="bckg"></span>
+<header>
+  <h1>Dashboard</h1>
+  <nav>
+    <ul>
+      <li class="sel">
+        <a href="#m1" data-title="Diagnosis">Diagnosis</a>
+      </li>
+      <li>
+        <a href="#m2"  data-title="Notes">Notes</a>
+      </li>
+      <li>
+        <a href="#m3" data-title="BLAH">BLAH</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+<main>
+  <div class="title">
+    <h2>Diagnosis</h2>
+  </div>
+
+  <div class="target">
+  <div id="m1">
+  <article class="larg">
+    <div>
+      <h3>250.01 <span class="entypo-down-open"></span></h3>
+      <p>Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus iste quia incidunt ad provident ullam quo assumenda expedita quae sapiente ipsa qui esse similique! Modi obcaecati natus sapiente quaerat omnis.</p>
+    </div>
+    <div>
+      <h3>250.02 <span class="entypo-down-open"></span></h3>
+      <p>Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus iste quia incidunt ad provident ullam quo assumenda expedita quae sapiente ipsa qui esse similique! Modi obcaecati natus sapiente quaerat omnis.</p>
+    </div>
+    <div>
+      <h3>250.03 <span class="entypo-down-open"></span></h3>
+      <p>Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus iste quia incidunt ad provident ullam quo assumenda expedita quae sapiente ipsa qui esse similique! Modi obcaecati natus sapiente quaerat omnis.</p>
+    </div>
+  </article>
+  </div>
+
+  <div id="m2">
+  <article class="larg">
+    <div>
+      <h3>250.01<span class="entypo-down-open"></span></h3>
+      <p><b>Note 1:</b> This hurt, that hurt, blah blah, ICD test</p>
+      <p><b>Note 2:</b> This hurt twice, that hurt, blah blah, ICD test</p>
+      <p><b>Note 3:</b> This hurt omg , that hurt, blah blah, ICD test</p>
+    </div>
+    <div>
+      <h3>250.02<span class="entypo-down-open"></span></h3>
+      <p><b>Note 1:</b> This hurt, that hurt, blah blah, ICD test</p>
+      <p><b>Note 2:</b> This hurt twice, that hurt, blah blah, ICD test</p>
+      <p><b>Note 3:</b> This hurt omg , that hurt, blah blah, ICD test</p>
+    </div>
+    <div>
+      <h3>250.03<span class="entypo-down-open"></span></h3>
+      <p><b>Note 1:</b> stomach hurt, that hurt, blah blah, ICD test</p>
+      <p><b>Note 2:</b> stomach hurt inflamed, that hurt, blah blah, ICD test</p>
+      <p><b>Note 3:</b> note stomach full , that hurt, blah blah, ICD test</p>
+    </div>
+  </article>
+  </div>
+  </div>
+
+
+</main>
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <script src="js/index.js"></script>
+  <script>$(document).ready(function() {
+    $(".sel").trigger('click');
+});</script>
+
+</body>
+</html>
