@@ -30,7 +30,10 @@
         <a href="#m1" data-title="Diagnosis">Diagnosis</a>
       </li>
       <li id="Link2">
-        <a href="#m2"  data-title="Notes">Notes</a>
+        <a href="#m2"  data-title="Statistics">Statistics</a>
+      </li>
+      <li id="Link3">
+        <a href="#m3"  data-title="Export">Export</a>
       </li>
     </ul>
   </nav>
@@ -45,7 +48,7 @@
   <article class="larg">
   <div>
       <h3>Your Clinical Note<span class="entypo-down-open"></span></h3>
-      <p>This dropdown contains the inputted clinical note. Here we will higlight what made us predict the number 1 predicted ICD-9 code.</p>
+      <p>This dropdown contains the inputted clinical note. Here we will <font color="green">highlight</font> what made us predict the number 1 predicted ICD-9 code.</p>
     </div>
     <br>
     <center><p>Predicted Diagnoses</p></center>
@@ -67,9 +70,19 @@
   </article>
   </div>
 
+  <!--Statistics from our Deep Learning Model -->
   <div id="m2">
   <article class="larg">
-    <div>
+  <div>
+  <h3>Basic Statistics<span class="entypo-down-open"></span></h3>
+  </div>
+  <div>
+  <h3>Confusion Matrix<span class="entypo-down-open"></span></h3>
+  </div>
+  <div>
+  <h3>Learning Curve<span class="entypo-down-open"></span></h3>
+  </div>
+    <!--<div>
       <h3>250.01<span class="entypo-down-open"></span></h3>
       <p><b>Note 1: </b>the patient has nausea, is vomiting, and dehydrated.</p>
       <p><b>Note 2: </b>dehydration, hypervenilation, abdominal pain, nausea</p>
@@ -86,9 +99,20 @@
       <p><b>Note 1:</b> stomach hurt, that hurt, blah blah, ICD test</p>
       <p><b>Note 2:</b> stomach hurt inflamed, that hurt, blah blah, ICD test</p>
       <p><b>Note 3:</b> note stomach full , that hurt, blah blah, ICD test</p>
-    </div>
+    </div> -->
   </article>
   </div>
+
+
+  <div id="m3">
+
+  <article class="larg">
+  <center><iframe src="email.html" name="iframe_a"></iframe></center>
+  </article>
+  </div>
+
+
+
   </div>
 </main>
   <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
@@ -98,15 +122,23 @@
   $(document).ready(function() {
       $("#m1").css('display','block')
       $("#m2").css('display','none');
+      $("#m3").css('display','none');
     });
   $("#Link1").click(function() {
     $("#m1").show()
     $("#m2").hide()
+    $("#m3").hide()
     }); 
   $("#Link2").click(function() {
     $("#m2").show()
     $("#m1").hide()
+    $("#m3").hide()
     }); 
+  $("#Link3").click(function() {
+    $("#m3").show()
+    $("#m1").hide()
+    $("#m2").hide()
+    });
   </script>
 </body>
 </html>
