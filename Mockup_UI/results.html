@@ -6,7 +6,7 @@
   
   
   
-      <link rel="stylesheet" href="css/style2.css">
+  <link rel="stylesheet" href="css/style2.css">
 
   
 </head>
@@ -25,16 +25,16 @@
 <header>
   <h1>Dashboard</h1>
   <nav>
-    <ul>
-      <li class="sel">
+    <ul class="sel">
+      <li id="Link1">
         <a href="#m1" data-title="Diagnosis">Diagnosis</a>
       </li>
-      <li>
+      <li id="Link2">
         <a href="#m2"  data-title="Notes">Notes</a>
       </li>
-      <li>
+      <!--<li>
         <a href="#m3" data-title="BLAH">BLAH</a>
-      </li>
+      </li> -->
     </ul>
   </nav>
 </header>
@@ -43,20 +43,44 @@
     <h2>Diagnosis</h2>
   </div>
 
+  <!--<div id="fakeLink">
+  <article class="larg">
+    <div>
+      <h3>250.01 <span class="entypo-down-open"></span></h3>
+      <p>Confidence: 82%</p>
+      <p>Description: Diabetes mellitus without mention of complication, type I [juvenile type], not stated as uncontrolled.</p>
+    </div>
+    <div>
+      <h3>250.02 <span class="entypo-down-open"></span></h3>
+      <p>Confidence: 64%</p>
+      <p>Description: Diabetes mellitus without mention of complication, type II or unspecified type, uncontrolled.</p>
+    </div>
+    <div>
+      <h3>250.03 <span class="entypo-down-open"></span></h3>
+      <p>Confidence: 55%</p>
+      <p>Description: Diabetes mellitus without mention of complication, type I [juvenile type], uncontrolled.</p>
+    </div>
+  </article>
+  </div> -->
+
+
   <div class="target">
   <div id="m1">
   <article class="larg">
     <div>
       <h3>250.01 <span class="entypo-down-open"></span></h3>
-      <p>Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus iste quia incidunt ad provident ullam quo assumenda expedita quae sapiente ipsa qui esse similique! Modi obcaecati natus sapiente quaerat omnis.</p>
+      <p>Confidence: 82%</p>
+      <p>Description: Diabetes mellitus without mention of complication, type I [juvenile type], not stated as uncontrolled.</p>
     </div>
     <div>
       <h3>250.02 <span class="entypo-down-open"></span></h3>
-      <p>Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus iste quia incidunt ad provident ullam quo assumenda expedita quae sapiente ipsa qui esse similique! Modi obcaecati natus sapiente quaerat omnis.</p>
+      <p>Confidence: 64%</p>
+      <p>Description: Diabetes mellitus without mention of complication, type II or unspecified type, uncontrolled.</p>
     </div>
     <div>
       <h3>250.03 <span class="entypo-down-open"></span></h3>
-      <p>Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus iste quia incidunt ad provident ullam quo assumenda expedita quae sapiente ipsa qui esse similique! Modi obcaecati natus sapiente quaerat omnis.</p>
+      <p>Confidence: 55%</p>
+      <p>Description: Diabetes mellitus without mention of complication, type I [juvenile type], uncontrolled.</p>
     </div>
   </article>
   </div>
@@ -65,9 +89,9 @@
   <article class="larg">
     <div>
       <h3>250.01<span class="entypo-down-open"></span></h3>
-      <p><b>Note 1:</b> This hurt, that hurt, blah blah, ICD test</p>
-      <p><b>Note 2:</b> This hurt twice, that hurt, blah blah, ICD test</p>
-      <p><b>Note 3:</b> This hurt omg , that hurt, blah blah, ICD test</p>
+      <p><b>Note 1: </b>the patient has nausea, is vomiting, and dehydrated.</p>
+      <p><b>Note 2: </b>dehydration, hypervenilation, abdominal pain, nausea</p>
+      <p><b>Note 3: </b>tired, dehydrated, vision trouble, right upper quadrant pain</p>
     </div>
     <div>
       <h3>250.02<span class="entypo-down-open"></span></h3>
@@ -89,9 +113,20 @@
 </main>
   <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
   <script src="js/index.js"></script>
-  <script>$(document).ready(function() {
-    $(".sel").trigger('click');
-});</script>
+  <script>
+  $(document).ready(function() {
+      $("#m1").css('display','block');
+      $("#m2").css('display','none')
+});
+  $("#Link1").click(function() {
+    $("#m1").show()
+    $("#m2").hide()
+  }); 
+  $("#Link2").click(function() {
+    $("#m2").show()
+    $("#m1").hide()
+  }); 
+  </script>
 
 </body>
 </html>
