@@ -32,9 +32,6 @@
       <li id="Link2">
         <a href="#m2"  data-title="Notes">Notes</a>
       </li>
-      <!--<li>
-        <a href="#m3" data-title="BLAH">BLAH</a>
-      </li> -->
     </ul>
   </nav>
 </header>
@@ -42,28 +39,6 @@
   <div class="title">
     <h2>Diagnosis</h2>
   </div>
-
-  <!--<div id="fakeLink">
-  <article class="larg">
-    <div>
-      <h3>250.01 <span class="entypo-down-open"></span></h3>
-      <p>Confidence: 82%</p>
-      <p>Description: Diabetes mellitus without mention of complication, type I [juvenile type], not stated as uncontrolled.</p>
-    </div>
-    <div>
-      <h3>250.02 <span class="entypo-down-open"></span></h3>
-      <p>Confidence: 64%</p>
-      <p>Description: Diabetes mellitus without mention of complication, type II or unspecified type, uncontrolled.</p>
-    </div>
-    <div>
-      <h3>250.03 <span class="entypo-down-open"></span></h3>
-      <p>Confidence: 55%</p>
-      <p>Description: Diabetes mellitus without mention of complication, type I [juvenile type], uncontrolled.</p>
-    </div>
-  </article>
-  </div> -->
-
-
   <div class="target">
   <div id="m1">
   <article class="larg">
@@ -108,25 +83,23 @@
   </article>
   </div>
   </div>
-
-
 </main>
   <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
   <script src="js/index.js"></script>
+  <!-- Displays Diagnosis Tab, shows and hides other tabs when clicked -->
   <script>
   $(document).ready(function() {
-      $("#m1").css('display','block');
-      $("#m2").css('display','none')
-});
+      $("#m1").css('display','block')
+      $("#m2").css('display','none');
+    });
   $("#Link1").click(function() {
     $("#m1").show()
     $("#m2").hide()
-  }); 
+    }); 
   $("#Link2").click(function() {
     $("#m2").show()
     $("#m1").hide()
-  }); 
+    }); 
   </script>
-
 </body>
 </html>
