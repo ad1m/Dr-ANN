@@ -1,8 +1,9 @@
 
 # coding: utf-8
 
-# In[10]:
+# In[58]:
 
+get_ipython().magic(u'matplotlib inline')
 import pandas as pd;
 import numpy as np;
 import scipy as sp;
@@ -10,6 +11,7 @@ import re;
 import pickle;
 import os;
 import subprocess
+import matplotlib.pyplot as plt
 
 import sklearn;
 from sklearn.utils import shuffle;
@@ -17,8 +19,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, T
 from sklearn.decomposition import TruncatedSVD
 
 
-
-# In[11]:
+# In[4]:
 
 def notify_slack(text):
     subprocess.Popen('''curl -X POST --data-urlencode "payload={'channel' : '#random', 'username': 'webhookbot', 'text':'''+ '\'' + text + '\'' + '''}" https://hooks.slack.com/services/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''', shell=True)
@@ -27,24 +28,106 @@ def notify_slack(text):
 
 # This function will read in data to be vectorized for the LSTM model
 
-# In[12]:
+# In[73]:
 
 notify_slack("Starting data load")
 
 def load_data():
-    diagnosis = pd.read_csv('../data/DIAGNOSES_ICD.csv');
-    notes = pd.read_csv('../data/NOTEEVENTS.csv');
+    diagnosis = pd.read_csv('/home/ubuntu/workspace/data/DIAGNOSES_ICD.csv');
+    notes = pd.read_csv('/home/ubuntu/workspace/data/NOTEEVENTS.csv');
     
     return diagnosis, notes;
 
 diagnosis, notes = load_data();
+diagnosis = diagnosis.dropna(axis=0, how="any")
+
+
+# In[41]:
+
+groups = notes.groupby('HADM_ID').apply(lambda row: list(set(row['TEXT'])));
+
+
+# In[74]:
+
+print ("Overall: ", len(diagnosis))
+print ("Unique codes:", len(set(diagnosis["ICD9_CODE"].values)))
+
+# Takes string and returns a formated icd9 code
+def format_icd9(icd9):
+    if icd9[0] == "V":
+        return icd9[0:3]
+    if icd9[0] == "E":
+        return icd9[0:4]
+    else: 
+        return icd9[0:3]
+
+formatted_icd9_codes = diagnosis["ICD9_CODE"].apply(format_icd9)
+print ("Reduced unique codes", len(set(formatted_icd9_codes)))
+
+
+# In[75]:
+
+diagnosis_reduced_icd9 = diagnosis.join(formatted_icd9_codes, lsuffix="_l", rsuffix="_r")
+diagnosis_reduced_icd9 = diagnosis_reduced_icd9[["HADM_ID", "ICD9_CODE_r"]]
+diagnosis_reduced_icd9.columns = ["HADM_ID", "ICD9_CODE"]
+
+
+# In[84]:
 
 diagnosis_group = diagnosis.groupby('HADM_ID').apply(lambda x: list(x['ICD9_CODE']));
+diagnosis_group_reduced = diagnosis_reduced_icd9.groupby('HADM_ID').apply(lambda x: set(x['ICD9_CODE']));
+
+diagnosis_count = diagnosis_group.apply(lambda x: len(x))
+diagnosis_count_reduced = diagnosis_group_reduced.apply(lambda x: len(x))
+
+diagnosis_count.hist(bins=35)
+plt.show()
+
+diagnosis_count_reduced.hist(bins=35)
+plt.show()
+
+
+# In[124]:
+
+#print(diagnosis_group_reduced)
+diagnosis_group_reduced.name = "ICD9_set"
+notes_icd9 = notes.set_index("HADM_ID").join(diagnosis_group_reduced, how="inner", lsuffix="_l", rsuffix="_r")
+notes_icd9 = notes_icd9[["TEXT", "ICD9_set"]]
+print(notes_icd9.shape)
+
+
+# In[138]:
+
+icd9_mapping = dict(zip( set(diagnosis_reduced_icd9["ICD9_CODE"].values) , np.arange(0, len(set(formatted_icd9_codes))) ))
+
+# indexing into dict to get feature array mapping
+# takes in a icd9 set object
+def feature_mapping(icd9_set):
+    vector = np.zeros((len(icd9_mapping)))
+    for icd9 in icd9_set:
+        vector[icd9_mapping[icd9]] = 1
+    return vector
+
+#drop 47 notes corresponding to 47 dropped diagnosis? 
+
+notes_icd9["vector"] = notes_icd9["ICD9_set"].apply(feature_mapping)
+print (notes_icd9.shape)
+
+
+# In[148]:
+
+print(notes_icd9.iloc[0])
+print(len(notes_icd9["vector"].iloc[0]))
+labels = notes_icd9["vector"].values
+print(labels[0].shape)
+print (sum(labels[0]))
+pickle.dump(labels, open("/mnt/labels", "wb"))
+os.exit()
 
 
 # Next, we create a custom stop words method.
 
-# In[11]:
+# In[19]:
 
 def get_stopwords():
     stop_words = str();
@@ -59,7 +142,7 @@ def get_stopwords():
 
 # We create a function that takes in a textual clinical note and run preprocessing steps on it to remove dates, lower case all the words, etc. 
 
-# In[ ]:
+# In[20]:
 
 def clean_text(notes_df):
     stop_words = get_stopwords();
@@ -85,7 +168,7 @@ def clean_text(notes_df):
     return notes_df;
 
 
-# In[153]:
+# In[21]:
 
 #notes_filtered = clean_text(notes);
 #pickle.dump(notes_filtered, open('/home/ubuntu/CliNER/data/saved/notes_filtered', "wb"), protocol=2);
@@ -95,7 +178,7 @@ notes_filtered = pickle.load(open('/home/ubuntu/CliNER/data/saved/notes_filtered
 
 # A method to parse the output from CliNER into a vocabulary. We use this vocab to inform out TFIDF Transformer in order to reduce our vector size from millions down to 64k important words. 
 
-# In[ ]:
+# In[22]:
 
 notify_slack("Getting CliNER vocab")
 
@@ -114,7 +197,7 @@ def get_cliner_vocab():
     return text_list, type_list
 
 
-# In[ ]:
+# In[23]:
 
 text_list, type_list = get_cliner_vocab()
 max_length = max([len(text.split()) for text in text_list])
@@ -130,17 +213,19 @@ min_length = min([len(text.split()) for text in text_list])
 #cleaned_notes_counts = cleaned_vectorizer_updated.transform(text_list);
 
 
-# In[8]:
+# In[56]:
 
-cleaned_tfidf_vectorizer = TfidfVectorizer(ngram_range=(1, 4), stop_words='english', min_df=0.05);
+cleaned_tfidf_vectorizer = TfidfVectorizer(ngram_range=(1, 4), stop_words='english', min_df=1);
+cleaned_tfidf_vectorizer_updated = cleaned_tfidf_vectorizer.fit(text_list);
+print (len(cleaned_tfidf_vectorizer_updated.vocabulary_))
+print (notes_filtered["TEXT"].shape)
 
 
-# In[7]:
+# In[25]:
 
 try:
-    notify_slack("Starting TFIDF Fit")
+    notify_slack("Starting TFIDF fit & transform")
     cleaned_tfidf_vectorizer_updated = cleaned_tfidf_vectorizer.fit(text_list);
-
     cleaned_tfidf_counts = cleaned_tfidf_vectorizer_updated.transform(notes_filtered["TEXT"]);
     
     notify_slack("Pickling sparse counts into current directory")
@@ -150,14 +235,11 @@ try:
     svd = TruncatedSVD(n_components = 1000)
     clean_tfidf_reduced = svd.fit_transform(cleaned_tfidf_counts)
     
-    #notify_slack("Converting to array")
-    #cleaned_tfidf_counts_array = cleaned_tfidf_counts.toarray()
-    
     notify_slack("Pickling array into current directory")
-    pickle.dump(clean_tfidf_reduced, open("tfidf_vectors",'wb'))
+    pickle.dump(clean_tfidf_reduced, open("tfidf_vectors_min_df=0.05",'wb'))
     
     notify_slack("Pickling SVD into current directory")
-    pickle.dump(svd, open('fit_svd_model', 'wb'))
+    pickle.dump(svd, open('fit_svd_model_min_df=0.05', 'wb'))
     
     notify_slack("Successfully completed! :D ")
     
