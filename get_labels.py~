@@ -70,5 +70,3 @@ def get_labels():
     icd9_mapping = dict(zip( set(diagnosis_reduced_icd9["ICD9_CODE"].values) , np.arange(0, len(set(formatted_icd9_codes))) ))
     notes_icd9["vector"] = notes_icd9["ICD9_set"].apply(lambda x: feature_mapping(icd9_mapping, x));
     labels = notes_icd9["vector"].values
-
-    return labels;
