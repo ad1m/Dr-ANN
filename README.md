@@ -1,4 +1,6 @@
-# Dr. ANN
+#  Dr. ANN 
+<img src='http://i.imgur.com/bE6iAGu.jpg' width=100x/> 
+
 ## [https://www.doctorann.xyz](https://www.doctorann.xyz)
 
 
@@ -60,15 +62,10 @@ A web based system that uses deep learning to diagnosis patients based on their 
 - .gitmodules
 	- Contains Submodule links for our repo.
 
-#### Documentation
-
-- Docs
-	- HTML and Markdown files for the Notebooks.
-- README.md
-	- This right here.
 
 ## To run the Code
 
 You can use the IPython notebooks. You will need to obtain the required datasets from MIMIC III, and place them in the same directory. To obtain the pre-processed data, run the Data-Cleaning notebook, use the outputs from it to run the Mulit-Class-LSTM Notebook. Finally, you can run the Metrics notebook to see how them model performed.
+
 
 <img src='http://i.imgur.com/bE6iAGu.jpg' width=800px/>
