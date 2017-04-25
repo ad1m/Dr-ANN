@@ -6,9 +6,14 @@
 
 A web based system that uses deep learning to diagnosis patients based on their clinical notes.
 
-###Authors - Ravish Chawla, Adam Lieberman, Garrett, Mallory
+### Authors - Ravish Chawla, Adam Lieberman, Garrett, Mallory
 
 ## Project Structure
+
+#### Front-End Code
+- [http://github.com/ravishchawla/doctorann/](http://github.com/ravishchawla/doctorann/)
+	- Located in the above repo
+	- For the instructions on running the front end code please refer to the repository
 
 #### IPython Notebooks
 
