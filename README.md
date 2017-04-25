@@ -12,7 +12,7 @@ A web based system that uses deep learning to diagnosis patients based on their 
 
 #### Front-End Code
 - [http://github.com/ravishchawla/doctorann/](http://github.com/ravishchawla/doctorann/)
-	- Located in the above repo
+ 	- Located in the above repo, or clickable from the `dotorann @ a79ddbc` link.
 	- For the instructions on running the front end code please refer to the repository
 
 #### IPython Notebooks
