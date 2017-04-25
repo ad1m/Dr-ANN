@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Multiclass_LSTM</title>
+
+
+<style type="text/css">
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #737373;
+    background-color: white;
+    margin: 10px 13px 10px 13px;
+}
+table {
+	margin: 10px 0 15px 0;
+	border-collapse: collapse;
+}
+td,th {
+	border: 1px solid #ddd;
+	padding: 3px 10px;
+}
+th {
+	padding: 5px 10px;
+}
+
+a {
+    color: #0069d6;
+}
+a:hover {
+    color: #0050a3;
+    text-decoration: none;
+}
+a img {
+    border: none;
+}
+p {
+    margin-bottom: 9px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #404040;
+    line-height: 36px;
+}
+h1 {
+    margin-bottom: 18px;
+    font-size: 30px;
+}
+h2 {
+    font-size: 24px;
+}
+h3 {
+    font-size: 18px;
+}
+h4 {
+    font-size: 16px;
+}
+h5 {
+    font-size: 14px;
+}
+h6 {
+    font-size: 13px;
+}
+hr {
+    margin: 0 0 19px;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+}
+blockquote {
+    padding: 13px 13px 21px 15px;
+    margin-bottom: 18px;
+    font-family:georgia,serif;
+    font-style: italic;
+}
+blockquote:before {
+    content:"\201C";
+    font-size:40px;
+    margin-left:-10px;
+    font-family:georgia,serif;
+    color:#eee;
+}
+blockquote p {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    margin-bottom: 0;
+    font-style: italic;
+}
+code, pre {
+    font-family: Monaco, Andale Mono, Courier New, monospace;
+}
+code {
+    background-color: #fee9cc;
+    color: rgba(0, 0, 0, 0.75);
+    padding: 1px 3px;
+    font-size: 12px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+pre {
+    display: block;
+    padding: 14px;
+    margin: 0 0 18px;
+    line-height: 16px;
+    font-size: 11px;
+    border: 1px solid #d9d9d9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+pre code {
+    background-color: #fff;
+    color:#737373;
+    font-size: 11px;
+    padding: 0;
+}
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 11px;
+  line-height: 10px;
+  color: #555;
+  vertical-align: middle;
+  background-color: #fcfcfc;
+  border: solid 1px #ccc;
+  border-bottom-color: #bbb;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #bbb;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:10px auto;
+    }
+}
+@media print {
+	body,code,pre code,h1,h2,h3,h4,h5,h6 {
+		color: black;
+	}
+	table, pre {
+		page-break-inside: avoid;
+	}
+}
+</style>
+
+<style type="text/css">
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: slategray;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<p><center><h1>LSTM for k-hot Encoded Multiclassification</h1></center></p>
+
+<p>In this Notebook, we will Train a LSTM using K Hot Encoded Multi Classification. We will build a Neural Network architecture, and use the Featureized results from previous Notebooks as Input data.</p>
+
+<h4 id="toc_0">Imports</h4>
+
+<p>To start, we will make the necessary imports. The important libraries being used here are Keras and Tensorflow. get_labels is a Class we wrote to obtain Labels from our dataset.</p>
+
+<div><pre><code class="language-python">import numpy as np
+
+from get_labels import get_labels
+from sklearn.externals import joblib
+from sklearn.cross_validation import train_test_split
+from sklearn.cross_validation import ShuffleSplit
+
+import keras.backend as K
+from keras.models import Sequential
+from keras.layers import Dense, Activation, Reshape, Dropout
+from keras.layers import LSTM
+from keras.optimizers import *;
+
+from keras.callbacks import ModelCheckpoint, Callback
+
+import urllib2;
+import json;</code></pre></div>
+
+<div><pre><code class="language-none">Using TensorFlow backend.</code></pre></div>
+
+<h4 id="toc_1">Progress Tracking</h4>
+
+<p>We will use the following Method to post messsage on our Slack channel. This will allow us to obtain Status updates as our Model runs.</p>
+
+<div><pre><code class="language-python">&#39;&#39;&#39;
+Helper function to send notifications on Slack via Post CURL.
+&#39;&#39;&#39;
+def notify_slack(message):
+    url = &#39;https://hooks.slack.com/services/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&#39;;
+    post_fields = json.dumps({&#39;channel&#39; : &#39;#random&#39;, &#39;username&#39;: &#39;webhookbot&#39;, &#39;text&#39;: message});
+
+    request = urllib2.Request(url, post_fields);
+    response = urllib2.urlopen(request)
+    read_val = response.read()
+</code></pre></div>
+
+<h4 id="toc_2">Obtaining the Lables</h4>
+
+<p>The next step is to obtain the Labels for our data. We will store these in a new variable, and will have the format of being K-Hot encoded. So, for instance, if a Patient has ICD-9 codes 4, 5, and 9 assigned to him/her, our of Total 100 possible values, that patient will be given a 100-length long Zero-vector, with positions 4, 5, and 9 activated and set to 1. This vectorization will be done for each Clinical note, so for our ~2,000,000 notes, there will be ~2 Millions vectors returned.</p>
+
+<div><pre><code class="language-python">labels = get_labels()
+notify_slack(&#39;Got labels&#39;);</code></pre></div>
+
+<div><pre><code class="language-none">/home/ubuntu/.local/lib/python2.7/site-packages/IPython/core/interactiveshell.py:2881: DtypeWarning: Columns (4,5) have mixed types. Specify dtype option on import or set low_memory=False.
+  exec(code_obj, self.user_global_ns, self.user_ns)</code></pre></div>
+
+<h4 id="toc_3">Resizing the Lables</h4>
+
+<p>To use them with our model, the Labels have to be a reshaped to a [1, *] Vector.</p>
+
+<div><pre><code class="language-python">labels_array = np.array([x for x in labels])
+labels_reshaped = labels_array.reshape(1851243, 1, 1070)
+notify_slack(&#39;Labeles Reshaped&#39;);</code></pre></div>
+
+<h4 id="toc_4">Obtaining the Training Data</h4>
+
+<p>We have already processed the features into Training data, which have been stored as a JobLib file. That data will be loaded next.</p>
+
+<div><pre><code class="language-python">train_x = joblib.load(&quot;/mnt/cleaned_tfidf_reduced_420_morning&quot;)
+notify_slack(&#39;Loaded Train X&#39;);</code></pre></div>
+
+<h4 id="toc_5">Re-sizing the Training Data</h4>
+
+<p>Similar to Labels, we process the Training data as well to have the reshaped.</p>
+
+<div><pre><code class="language-python">print (train_x.shape)
+train_x_reshaped = train_x.reshape(1851243,1,1000)
+print (train_x_reshaped.shape)</code></pre></div>
+
+<div><pre><code class="language-none">(1851243, 1000)
+(1851243, 1, 1000)</code></pre></div>
+
+<h4 id="toc_6">Creating a Train-Test Split</h4>
+
+<p>Now we create a Train Test split on our data. Doing this will give us a 80% / 20% split, where we can use the 80% split for training and 20% for testing.</p>
+
+<div><pre><code class="language-python">x_train, x_test, y_train, y_test = train_test_split(train_x_reshaped, labels_reshaped, test_size=0.20)
+notify_slack(&#39;Obtained Train Test Split&#39;);</code></pre></div>
+
+<p>There are some variables which take up a lot of memory. We will delete those to free up the consumed RAM and ease computation.</p>
+
+<div><pre><code class="language-python">del train_x
+del labels_array
+del labels_reshaped</code></pre></div>
+
+<div><pre><code class="language-python">print (&quot;\n New shapes:&quot;)
+print(&quot;x_train shape&quot;, x_train.shape)
+print(&quot;x_test shape&quot;, x_test.shape)
+
+print(&quot;y_train shape&quot;, y_train.shape)
+print(&quot;y_test shape&quot;, y_test.shape)</code></pre></div>
+
+<div><pre><code class="language-none">New shapes:
+(&#39;x_train shape&#39;, (1480994, 1, 1000))
+(&#39;x_test shape&#39;, (370249, 1, 1000))
+(&#39;y_train shape&#39;, (1480994, 1, 1070))
+(&#39;y_test shape&#39;, (370249, 1, 1070))</code></pre></div>
+
+<h4 id="toc_7">Create Multiclass Loss Function</h4>
+
+<p>For our LSTM, we will use a Multi-Class Loss function.</p>
+
+<div><pre><code class="language-python">&#39;&#39;&#39;
+A custom Loss function for Multi-Class Prediction.
+&#39;&#39;&#39;
+def multiclass_loss(y_true, y_pred):
+    EPS = 1e-5
+    y_pred = K.clip(y_pred, EPS, 1 - EPS)
+    return -K.mean((1 - y_true) * K.log(1 - y_pred) + y_true * K.log(y_pred))</code></pre></div>
+
+<h4 id="toc_8">Instantiate Parameters for LSTM</h4>
+
+<div><pre><code class="language-python">shape = x_train.shape[2]
+num_classes = 1070</code></pre></div>
+
+<h4 id="toc_9">Create and Compile LSTM</h4>
+
+<p>Now, we will create the LSTM. The first thing we need to do is to create a Callback function for our model. This class will be added to a list of Model checkpoints, which will run the following items: It will save the losses in a List, increment the Total number of epochs completed, and Notify Slack on the progress of each Epoch.</p>
+
+<div><pre><code class="language-python">&#39;&#39;&#39;
+A Class that acts as a Callback between each Epoch, used to monitor progress.
+&#39;&#39;&#39;
+class LossHistory(Callback):
+    def on_train_begin(self, logs={}):
+        self.losses = []
+        self.num = 0;
+
+    def on_epoch_end(self, batch, logs={}):
+        self.losses.append(logs.get(&#39;loss&#39;))
+        self.num = self.num + 1;
+        notify_slack(&#39;Finished epoch &#39; + str(self.num) + &#39; with &#39; + str(logs));</code></pre></div>
+
+<p>Next, we define the Model architecture. It is best described by the following image:</p>
+
+<p><html>
+<center><img src='LSTM Model.png' width=500px></img></center>
+</html></p>
+
+<p>We use a LSTM Layer with 32 Neurons, followed by a Dropout and a Dense layer. The optimizer used is the Adam optimizer, with deault values. After trying different architectures, we settled on this because of the high ROC-AUC returned by it.</p>
+
+<div><pre><code class="language-python">&#39;&#39;&#39;
+Returns a Model Object instantiated with a LSTM Layer and a Dense Layer, along with an Adam optimizer.
+&#39;&#39;&#39;
+def create_model(shape,num_classes):
+    print (type(shape), type(num_classes))
+    print (shape, num_classes) # (None,shape)
+    
+    model = Sequential()
+    
+    &#39;&#39;&#39;
+    model.add(LSTM(output_dim=128, input_shape=(None, shape), return_sequences=True));
+    &#39;&#39;&#39;
+    
+    model.add(LSTM(output_dim=32, input_shape=(None, shape), return_sequences=True));
+    model.add(Dropout(rate=0.5));
+    model.add(Dense(num_classes, kernel_initializer=&#39;normal&#39;, activation=&#39;sigmoid&#39;));
+    
+    &#39;&#39;&#39;
+    opt = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+    opt = Adam(lr=0.1, decay=0.05);
+    &#39;&#39;&#39;
+    
+    filepath = &#39;model_checkpoint&#39;
+    history = LossHistory()
+    
+    model.compile(loss=multiclass_loss, optimizer=&#39;adam&#39;, metrics=[&#39;accuracy&#39;, &#39;mse&#39;, &#39;mae&#39;]);
+    checkpoint = ModelCheckpoint(filepath, monitor=&#39;val_acc&#39;, verbose=1, save_best_only=True, mode=&#39;max&#39;)
+    
+    callbacks_list = [checkpoint, history];
+
+    return model, callbacks_list</code></pre></div>
+
+<h4 id="toc_10">Train LSTM</h4>
+
+<p>The next step is to actual train the LSTM. We use 50 epochs, on a Batch size of 512. </p>
+
+<div><pre><code class="language-python">model, callbacks_list = create_model(shape, num_classes)
+notify_slack(&#39;Obtained LSTM Model and starting training&#39;);
+history = model.fit(x_train, y_train,
+              batch_size=512, epochs=50,
+              verbose = 1, callbacks=callbacks_list, validation_split=0.125)
+notify_slack(&#39;Completed LSTM Model on 50 epochs&#39;);</code></pre></div>
+
+<div><pre><code class="language-none">(&lt;type &#39;int&#39;&gt;, &lt;type &#39;int&#39;&gt;)
+(1000, 1070)
+
+
+/home/ubuntu/.local/lib/python2.7/site-packages/ipykernel_launcher.py:8: UserWarning: Update your `LSTM` call to the Keras 2 API: `LSTM(units=32, return_sequences=True, input_shape=(None, 100...)`
+
+
+
+Train on 1295869 samples, validate on 185125 samples
+Epoch 1/3
+1295744/1295869 [============================&gt;.] - ETA: 0s - loss: 0.0534 - acc: 0.0066 - mean_squared_error: 0.0131 - mean_absolute_error: 0.0304Epoch 00000: val_acc improved from -inf to 0.00845, saving model to model_checkpoint
+{&#39;acc&#39;: 0.0066395600172548305, &#39;loss&#39;: 0.053389187245908326, &#39;mean_absolute_error&#39;: 0.030402256992436344, &#39;val_mean_squared_error&#39;: 0.0091845857461462909, &#39;val_mean_absolute_error&#39;: 0.018135590655187109, &#39;val_acc&#39;: 0.0084537474679270766, &#39;mean_squared_error&#39;: 0.013141528600295455, &#39;val_loss&#39;: 0.037410789584626548}
+1295869/1295869 [==============================] - 117s - loss: 0.0534 - acc: 0.0066 - mean_squared_error: 0.0131 - mean_absolute_error: 0.0304 - val_loss: 0.0374 - val_acc: 0.0085 - val_mean_squared_error: 0.0092 - val_mean_absolute_error: 0.0181
+Epoch 2/3
+ 139904/1295869 [==&gt;...........................] - ETA: 99s - loss: 0.0386 - acc: 0.0081 - mean_squared_error: 0.0093 - mean_absolute_error: 0.0191</code></pre></div>
+
+<h4 id="toc_11">Save LSTM Model</h4>
+
+<p>We will save the Model after it is completed, so that it can be loaded in for prediction later.</p>
+
+<div><pre><code class="language-python">from keras.models import load_model
+model.save(&#39;khot_LSTM_216.h5&#39;) 
+notify_slack(&#39;Saved LSTM Model&#39;);</code></pre></div>
+
+
+
+<script type="text/javascript">
+var _self="undefined"!=typeof window?window:"undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?self:{},Prism=function(){var e=/\blang(?:uage)?-(\w+)\b/i,t=0,n=_self.Prism={util:{encode:function(e){return e instanceof a?new a(e.type,n.util.encode(e.content),e.alias):"Array"===n.util.type(e)?e.map(n.util.encode):e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\u00a0/g," ")},type:function(e){return Object.prototype.toString.call(e).match(/\[object (\w+)\]/)[1]},objId:function(e){return e.__id||Object.defineProperty(e,"__id",{value:++t}),e.__id},clone:function(e){var t=n.util.type(e);switch(t){case"Object":var a={};for(var r in e)e.hasOwnProperty(r)&&(a[r]=n.util.clone(e[r]));return a;case"Array":return e.map&&e.map(function(e){return n.util.clone(e)})}return e}},languages:{extend:function(e,t){var a=n.util.clone(n.languages[e]);for(var r in t)a[r]=t[r];return a},insertBefore:function(e,t,a,r){r=r||n.languages;var l=r[e];if(2==arguments.length){a=arguments[1];for(var i in a)a.hasOwnProperty(i)&&(l[i]=a[i]);return l}var o={};for(var s in l)if(l.hasOwnProperty(s)){if(s==t)for(var i in a)a.hasOwnProperty(i)&&(o[i]=a[i]);o[s]=l[s]}return n.languages.DFS(n.languages,function(t,n){n===r[e]&&t!=e&&(this[t]=o)}),r[e]=o},DFS:function(e,t,a,r){r=r||{};for(var l in e)e.hasOwnProperty(l)&&(t.call(e,l,e[l],a||l),"Object"!==n.util.type(e[l])||r[n.util.objId(e[l])]?"Array"!==n.util.type(e[l])||r[n.util.objId(e[l])]||(r[n.util.objId(e[l])]=!0,n.languages.DFS(e[l],t,l,r)):(r[n.util.objId(e[l])]=!0,n.languages.DFS(e[l],t,null,r)))}},plugins:{},highlightAll:function(e,t){var a={callback:t,selector:'code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code'};n.hooks.run("before-highlightall",a);for(var r,l=a.elements||document.querySelectorAll(a.selector),i=0;r=l[i++];)n.highlightElement(r,e===!0,a.callback)},highlightElement:function(t,a,r){for(var l,i,o=t;o&&!e.test(o.className);)o=o.parentNode;o&&(l=(o.className.match(e)||[,""])[1],i=n.languages[l]),t.className=t.className.replace(e,"").replace(/\s+/g," ")+" language-"+l,o=t.parentNode,/pre/i.test(o.nodeName)&&(o.className=o.className.replace(e,"").replace(/\s+/g," ")+" language-"+l);var s=t.textContent,u={element:t,language:l,grammar:i,code:s};if(!s||!i)return n.hooks.run("complete",u),void 0;if(n.hooks.run("before-highlight",u),a&&_self.Worker){var c=new Worker(n.filename);c.onmessage=function(e){u.highlightedCode=e.data,n.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(u.element),n.hooks.run("after-highlight",u),n.hooks.run("complete",u)},c.postMessage(JSON.stringify({language:u.language,code:u.code,immediateClose:!0}))}else u.highlightedCode=n.highlight(u.code,u.grammar,u.language),n.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(t),n.hooks.run("after-highlight",u),n.hooks.run("complete",u)},highlight:function(e,t,r){var l=n.tokenize(e,t);return a.stringify(n.util.encode(l),r)},tokenize:function(e,t){var a=n.Token,r=[e],l=t.rest;if(l){for(var i in l)t[i]=l[i];delete t.rest}e:for(var i in t)if(t.hasOwnProperty(i)&&t[i]){var o=t[i];o="Array"===n.util.type(o)?o:[o];for(var s=0;s<o.length;++s){var u=o[s],c=u.inside,g=!!u.lookbehind,h=!!u.greedy,f=0,d=u.alias;u=u.pattern||u;for(var p=0;p<r.length;p++){var m=r[p];if(r.length>e.length)break e;if(!(m instanceof a)){u.lastIndex=0;var y=u.exec(m),v=1;if(!y&&h&&p!=r.length-1){var b=r[p+1].matchedStr||r[p+1],k=m+b;if(p<r.length-2&&(k+=r[p+2].matchedStr||r[p+2]),u.lastIndex=0,y=u.exec(k),!y)continue;var w=y.index+(g?y[1].length:0);if(w>=m.length)continue;var _=y.index+y[0].length,P=m.length+b.length;if(v=3,P>=_){if(r[p+1].greedy)continue;v=2,k=k.slice(0,P)}m=k}if(y){g&&(f=y[1].length);var w=y.index+f,y=y[0].slice(f),_=w+y.length,S=m.slice(0,w),O=m.slice(_),j=[p,v];S&&j.push(S);var A=new a(i,c?n.tokenize(y,c):y,d,y,h);j.push(A),O&&j.push(O),Array.prototype.splice.apply(r,j)}}}}}return r},hooks:{all:{},add:function(e,t){var a=n.hooks.all;a[e]=a[e]||[],a[e].push(t)},run:function(e,t){var a=n.hooks.all[e];if(a&&a.length)for(var r,l=0;r=a[l++];)r(t)}}},a=n.Token=function(e,t,n,a,r){this.type=e,this.content=t,this.alias=n,this.matchedStr=a||null,this.greedy=!!r};if(a.stringify=function(e,t,r){if("string"==typeof e)return e;if("Array"===n.util.type(e))return e.map(function(n){return a.stringify(n,t,e)}).join("");var l={type:e.type,content:a.stringify(e.content,t,r),tag:"span",classes:["token",e.type],attributes:{},language:t,parent:r};if("comment"==l.type&&(l.attributes.spellcheck="true"),e.alias){var i="Array"===n.util.type(e.alias)?e.alias:[e.alias];Array.prototype.push.apply(l.classes,i)}n.hooks.run("wrap",l);var o="";for(var s in l.attributes)o+=(o?" ":"")+s+'="'+(l.attributes[s]||"")+'"';return"<"+l.tag+' class="'+l.classes.join(" ")+'" '+o+">"+l.content+"</"+l.tag+">"},!_self.document)return _self.addEventListener?(_self.addEventListener("message",function(e){var t=JSON.parse(e.data),a=t.language,r=t.code,l=t.immediateClose;_self.postMessage(n.highlight(r,n.languages[a],a)),l&&_self.close()},!1),_self.Prism):_self.Prism;var r=document.currentScript||[].slice.call(document.getElementsByTagName("script")).pop();return r&&(n.filename=r.src,document.addEventListener&&!r.hasAttribute("data-manual")&&document.addEventListener("DOMContentLoaded",n.highlightAll)),_self.Prism}();"undefined"!=typeof module&&module.exports&&(module.exports=Prism),"undefined"!=typeof global&&(global.Prism=Prism);
+</script>
+
+<script type="text/javascript">
+Prism.languages.python={"triple-quoted-string":{pattern:/"""[\s\S]+?"""|'''[\s\S]+?'''/,alias:"string"},comment:{pattern:/(^|[^\\])#.*/,lookbehind:!0},string:/("|')(?:\\?.)*?\1/,"function":{pattern:/((?:^|\s)def[ \t]+)[a-zA-Z_][a-zA-Z0-9_]*(?=\()/g,lookbehind:!0},"class-name":{pattern:/(\bclass\s+)[a-z0-9_]+/i,lookbehind:!0},keyword:/\b(?:as|assert|async|await|break|class|continue|def|del|elif|else|except|exec|finally|for|from|global|if|import|in|is|lambda|pass|print|raise|return|try|while|with|yield)\b/,"boolean":/\b(?:True|False)\b/,number:/\b-?(?:0[bo])?(?:(?:\d|0x[\da-f])[\da-f]*\.?\d*|\.\d+)(?:e[+-]?\d+)?j?\b/i,operator:/[-+%=]=?|!=|\*\*?=?|\/\/?=?|<[<=>]?|>[=>]?|[&|^~]|\b(?:or|and|not)\b/,punctuation:/[{}[\];(),.:]/};
+</script>
+
+<script type="text/x-mathjax-config">
+(function () {
+
+MathJax.Hub.Config({
+	'showProcessingMessages': false,
+	'messageStyle': 'none'
+});
+
+if (typeof MathJaxListener !== 'undefined') {
+	MathJax.Hub.Register.StartupHook('End', function () {
+		MathJaxListener.invokeCallbackForKey_('End');
+	});
+}
+
+})();
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+</body>
+
+</html>
