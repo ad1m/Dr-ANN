@@ -10,6 +10,10 @@ A web based system that uses deep learning to diagnosis patients based on their 
 
 ## Project Structure
 
+#### Front-End Code
+- [http://github.com/ravishchawla/doctorann/](http://github.com/ravishchawla/doctorann/)
+	- Located in the above repo
+
 #### IPython Notebooks
 
 - data_cleaning.ipynb
